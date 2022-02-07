@@ -112,3 +112,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Misc ignore
+pygameDemo.py
+tempCodeRunnerFile.py
+icon_alternate.png

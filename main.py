@@ -83,38 +83,44 @@ def gameWon():
     print("\n" * 2)
     print(f"Congratulations, you guessed {currentWord} correctly!")
 
-#game loop
-currentWord = getRandomWord(fiveLetterWords)
-currentLetters = getLettersFromWord(currentWord)
-guessList = []
-print(f"CURRENT WORD: {currentWord} \n(dev use only comment out)")
-print(f"You're attempting to guess a {len(currentWord)} letter word.")
-userGuess = getUserGuess()
-count = 1
-userWins = True
-while userGuess != currentWord:
-    if count > 6:
-        userWins = False
-        gameLost()
-        break
-    #resetLetterEvaluations()
-    evaluateLetterMatch(userGuess)
-    #currentPerf = "Perfect letters: " + str(perfectLetters)
-    currentPerf = f"Guess Number {count} : " + "   ".join(perfectLetters)
-    #print(currentPerf)
-    guessList.append(currentPerf)
-    #print(guessList)
-    print("\n".join(guessList))
-    print("Valid letters: ", validLetters)
-    print("Wrong letters: ", wrongLetters)
-    #perfectLetters = ["_","_","_","_","_"]
-    if count < 6:
-        userGuess = getUserGuess()
-    count+=1
 
-if userWins == True:
-    gameWon()
-guessList.clear
+# This game loop is terminal based and formed the early basis for the projects skeleton; 
+# currently, this file, main.py, serves the GUI game in pyGameGUI
+# Will copy and refactor a mainTerminal that reintegrates this loop in the future
+
+
+#game loop
+# currentWord = getRandomWord(fiveLetterWords)
+# currentLetters = getLettersFromWord(currentWord)
+# guessList = []
+# print(f"CURRENT WORD: {currentWord} \n(dev use only comment out)")
+# print(f"You're attempting to guess a {len(currentWord)} letter word.")
+# userGuess = getUserGuess()
+# count = 1
+# userWins = True
+# while userGuess != currentWord:
+#     if count > 6:
+#         userWins = False
+#         gameLost()
+#         break
+#     #resetLetterEvaluations()
+#     evaluateLetterMatch(userGuess)
+#     #currentPerf = "Perfect letters: " + str(perfectLetters)
+#     currentPerf = f"Guess Number {count} : " + "   ".join(perfectLetters)
+#     #print(currentPerf)
+#     guessList.append(currentPerf)
+#     #print(guessList)
+#     print("\n".join(guessList))
+#     print("Valid letters: ", validLetters)
+#     print("Wrong letters: ", wrongLetters)
+#     #perfectLetters = ["_","_","_","_","_"]
+#     if count < 6:
+#         userGuess = getUserGuess()
+#     count+=1
+
+# if userWins == True:
+#     gameWon()
+# guessList.clear
 
 
 
