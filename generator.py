@@ -1,11 +1,10 @@
 import json
+from PyDictionary import PyDictionary
 
 with open('word lists/gwicks justwords/engmix.txt') as engmix:
     lines = engmix.readlines()
 
 
-#print(lines)
-#print(len(lines))
 
 fiveLetterWords = []
 sixLetterWords = []
@@ -18,12 +17,6 @@ for x in lines:
     if len(x) == 6:
         sixLetterWords.append(x.upper())
 
-
-print(fiveLetterWords[1000])
-print(sixLetterWords[1000])
-print(len(fiveLetterWords))
-print(len(sixLetterWords))
-#print(fiveLetterWords[5]+sixLetterWords[5])
 
 
 json.dumps(fiveLetterWords)
