@@ -270,7 +270,7 @@ while gameRunning:
     screen.fill((0,0,0))
 
     #set the Window icon
-    iconIMG = pygame.image.load('icon2.png')
+    iconIMG = pygame.image.load('icon.png')
     pygame.display.set_icon(iconIMG)
 
     # draw the main Mordle logo onto the GUI
