@@ -3,6 +3,9 @@ import pygame
 from pygameAlphaKeys import pygame_alpha_keys 
 from main import fiveLetterWords
 from main import getRandomWord
+import tkinter as tk
+from tkinter import messagebox
+import time
 
 # PyGame basic global vars to set up the GUI box
 pygame.init()
@@ -14,6 +17,29 @@ keyboard_font = pygame.font.Font(None, 40)
 qwertyList = list("QWERTYUIOPASDFGHJKLZXCVBNM")
 pygame.display.set_caption('Moredle')
 screen.fill((0,0,0))
+#set the Window icon
+iconIMG = pygame.image.load('icon.png')
+pygame.display.set_icon(iconIMG)
+
+# creating a Tkinter window, then hiding it 
+# this allows the usage of messagebox popups
+tk_root = tk.Tk()
+tk_root.withdraw()
+
+# the commented out lines below show a greeting message when the app opens
+# commented out for now because it feels like too much friction; anyone playing Mordle will be familiar with Wordle
+
+#tk.messagebox.askyesno("askyesno", "Find the value?")
+# greeting_message = """                      Welcome to Mordle!
+
+# Mordle is a Wordle-clone for the desktop, written in Python.
+
+# You have 6 attempts to guess the word, good luck!
+
+# """
+
+# messagebox.showinfo("Welcome", greeting_message)
+
 
 
 # LetterBox class wraps around a PyGame rectangle object and helper attributes
@@ -145,9 +171,9 @@ def drawEmptyBox(rect):
     text_surface = user_font.render("", True, (255, 255, 255))
     screen.blit(text_surface, (rect.x+30, rect.y+5))
 
-# returns the LetterKey object that represents the Rect holding the letter sent as an argument
+# returns the LetterKey object that represents the Rect holding the letter, "guess"
 # e.g., the player has entered the letter A into a LetterBox during gameplay and that is our "guess" argument
-# Use the keyboard_look_dict to get the coordinates mapped to the letter A
+# Use the keyboard_lookup_dict to get the coordinates mapped to the letter A
 # Use those coordinates to access the relevant space in the keyboard_grid for that letter (in the case of A, (1,0), the second row and first letter in that row)
 def getLetterKeyFromGuess(guess):
     tempTuple = keyboard_lookup_dict[guess]
@@ -156,7 +182,10 @@ def getLetterKeyFromGuess(guess):
     tempLetterKey = keyboard_grid[tempX][tempY]
     return tempLetterKey
 
-
+# Given a row, get the five letter stored in that row, combine them
+# while adding each letter to the row word, check whether its a perfect, valid, or invalid letter
+# update the validity/perfection status of the word in letterbox and keyboard grids
+# return the letters from the row as one word, currentRowWord
 def getAndValidateRowWord(row, guess_storage_grid, letterbox_grid):
     currentRowWord = []
     for i in range(5):
@@ -184,7 +213,7 @@ while game_running:
     keyboard_lookup_dict = {}
     currentWordLen = 0
 
-    # Fill the letterbox and keyboard grids with their relative objects then set tracking variables for current letterbox and Rect
+    # Fill the letterbox and keyboard grids with their relative objects, then set tracking variables for current letterbox and Rect
     populate_letterbox_grid(letterbox_grid)
     populate_keyboard(keyboard_grid, keyboard_lookup_dict)
     curBox = letterbox_grid[0][0]
@@ -279,20 +308,31 @@ while game_running:
                     if list(targetWord) == currentRowWord:
                         print(f"VICTORY, YOU GUESSED {targetWord} IN {row+1} TRIES!")
                         round_in_progress = False
+                        victory_message = f"""You correctly guessed {targetWord} in {row+1} tries. Would you like to try a new word?"""
+                        victory_response = messagebox.askyesno("Correct", victory_message)
+                        if victory_response == 'yes':
+                            pass
+                        else:
+                            round_in_progress = False
+                            break
                     elif row == 5:
                         # game lost here unless last guess is correct
                         print(f"YOU FAILED TO GUESS {targetWord} IN SIX TRIES")
-                        round_in_progress = False
+                        #round_in_progress = False
+                        failure_message = f"""You failed to guess {targetWord} in six tries. Would you like to try a new word?"""
+                        failure_response = messagebox.askyesno("Incorrect", failure_message)
+                        if failure_response == 'yes':
+                            pass
+                        else:
+                            round_in_progress = False
+                            break
 
 
-
+        # paint the background black again, to avoid any bleed-through
         screen.fill((0,0,0))
 
-        #set the Window icon
-        iconIMG = pygame.image.load('icon.png')
-        pygame.display.set_icon(iconIMG)
-
         # draw the main Mordle logo onto the GUI
+        # This must be done each frame because of the above background painting
         logoIMG = pygame.image.load('logo.png').convert()
         logoRect = logoIMG.get_rect()
         logoRect.left = 20
@@ -325,11 +365,6 @@ while game_running:
                 tempGuess = guess_storage_grid[i][j]
                 if tempGuess != None:
                     drawPrevGuess(letterbox_grid[i][j].rectObj, tempGuess)
-                    
-                    # tempTuple = keyboard_lookup_dict[tempGuess]
-                    # tempX = tempTuple[0]
-                    # tempY = tempTuple[1]
-                    # tempLetterKey = keyboard_grid[tempX][tempY]
                     tempLetterKey = getLetterKeyFromGuess(tempGuess)
                     if tempLetterKey.valid == False and tempLetterKey.perfect == False:
                         tempRect = tempLetterKey.rectObj
@@ -343,15 +378,10 @@ while game_running:
                 if letterbox_grid[i][j].perfectGuess == True:
                     pygame.draw.rect(screen, (53, 133, 71), letterbox_grid[i][j].rectObj)
                     drawPrevGuess(letterbox_grid[i][j].rectObj, tempGuess)
-                    
-                    # tempTuple = keyboard_lookup_dict[tempGuess]
-                    # tempX = tempTuple[0]
-                    # tempY = tempTuple[1]
-                    # tempLetterKey = keyboard_grid[tempX][tempY]
                     tempLetterKey = getLetterKeyFromGuess(tempGuess)
                     tempLetterKey.setPerfection(True)
-
                     tempRect = tempLetterKey.rectObj
+
                     pygame.draw.rect(screen, (53, 133, 71), tempRect)
                     text_surface =  keyboard_font.render(tempGuess, True, (255, 255, 255))
                     screen.blit(text_surface, (tempRect.x+10, tempRect.y+5))
@@ -359,24 +389,16 @@ while game_running:
                 elif letterbox_grid[i][j].validGuess == True:
                     pygame.draw.rect(screen, (200, 175, 0), letterbox_grid[i][j].rectObj)
                     drawPrevGuess(letterbox_grid[i][j].rectObj, tempGuess)
-
-                    # tempTuple = keyboard_lookup_dict[tempGuess]
-                    # tempX = tempTuple[0]
-                    # tempY = tempTuple[1]
-                    # tempLetterKey = keyboard_grid[tempX][tempY]
                     tempLetterKey = getLetterKeyFromGuess(tempGuess)
+                    
                     if tempLetterKey.perfect == False:
                         tempRect = tempLetterKey.rectObj
                         pygame.draw.rect(screen, (200, 175, 0), tempRect)
                         text_surface =  keyboard_font.render(tempGuess, True, (255, 255, 255))
                         screen.blit(text_surface, (tempRect.x+10, tempRect.y+5))
 
-
-                
-
-
+        # at the end of each frame, draw the current guess to the board
+        # then update all pygame objects                
         drawCurrentGuess(curRect)
         pygame.display.flip()
-        #pygame.display.update()
-
 pygame.quit()
