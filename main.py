@@ -10,7 +10,10 @@ validLetters = []
 wrongLetters = []
 
 
-with open('wordListFiveLetter.json', 'r') as fiveJSON:
+# with open('wordListFiveLetter.json', 'r') as fiveJSON:
+#     fiveLetterWords = json.load(fiveJSON)
+
+with open('wordListFiveLetterPYDICT.json', 'r') as fiveJSON:
     fiveLetterWords = json.load(fiveJSON)
 
 
