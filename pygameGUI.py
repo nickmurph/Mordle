@@ -15,10 +15,10 @@ screen = pygame.display.set_mode([460,750])
 user_font = pygame.font.Font(None, 80)
 keyboard_font = pygame.font.Font(None, 40)
 qwertyList = list("QWERTYUIOPASDFGHJKLZXCVBNM")
-pygame.display.set_caption('Moredle')
+pygame.display.set_caption('Mordle')
 screen.fill((0,0,0))
 #set the Window icon
-iconIMG = pygame.image.load('icon.png')
+iconIMG = pygame.image.load('images/icon.png')
 pygame.display.set_icon(iconIMG)
 
 # creating a Tkinter window, then hiding it 
@@ -222,6 +222,8 @@ while game_running:
 
 # individual round loop
     round_in_progress = True
+    #uncomment to be given the answer in the console for testing/debugging purpose
+    # print(targetWord)
     while round_in_progress:    
 
         # if the user has entered a letter into an empty box, the cursor will progress to the next box
@@ -307,6 +309,22 @@ while game_running:
                     # Check if user got the word correct
                     if list(targetWord) == currentRowWord:
                         print(f"VICTORY, YOU GUESSED {targetWord} IN {row+1} TRIES!")
+                        
+                        #this loop is necessary to ensure the correct solution gets painted green before the victory popup exits the game loop
+                        #really need to refactor this entire file, starting with this bit
+                        for i in range(5):
+                            tempGuess = list(targetWord)[i]
+                            pygame.draw.rect(screen, (53, 133, 71), letterbox_grid[row][i].rectObj)
+                            drawPrevGuess(letterbox_grid[row][i].rectObj, tempGuess)
+                            tempLetterKey = getLetterKeyFromGuess(tempGuess)
+                            tempLetterKey.setPerfection(True)
+                            tempRect = tempLetterKey.rectObj
+                            # pygame.draw.rect(screen, (53, 133, 71), tempRect)
+                            # text_surface =  keyboard_font.render(tempGuess, True, (255, 255, 255))
+                            # screen.blit(text_surface, (tempRect.x+10, tempRect.y+5))
+                            drawCurrentGuess(curRect)
+                            pygame.display.flip()
+                        
                         round_in_progress = False
                         victory_message = f"""You correctly guessed {targetWord} in {row+1} tries. Would you like to try a new word?"""
                         victory_response = messagebox.askyesno("Correct", victory_message)
@@ -333,7 +351,7 @@ while game_running:
 
         # draw the main Mordle logo onto the GUI
         # This must be done each frame because of the above background painting
-        logoIMG = pygame.image.load('logo.png').convert()
+        logoIMG = pygame.image.load('images/logo.png').convert()
         logoRect = logoIMG.get_rect()
         logoRect.left = 20
         logoRect.top = 20
