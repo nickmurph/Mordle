@@ -6,7 +6,7 @@ Mordle is a sparse Wordle-like game, implemented in Python for the desktop using
 
 ![The Mordle desktop app](/images/demo.png)
 </br>
-- an unusually short game of Mordle
+- a typical game of Mordle
 </br>
 </br>
 </br>
